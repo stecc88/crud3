@@ -13,23 +13,31 @@ dotenv.config();
 
 const app = express();
 
-// ✅ CORS — SIEMPRE ANTES DE RUTAS
+/* =========================
+   CORS (SIEMPRE PRIMERO)
+========================= */
 app.use(
   cors({
     origin: [
-      "http://localhost:5175",
-      "https://tu-proyecto.vercel.app",
+      "http://localhost:5175",               // Frontend local (Vite)
+      "https://crud3-lovat.vercel.app",      // Frontend en Vercel (REAL)
     ],
     credentials: true,
   })
 );
 
-// middlewares base
+/* =========================
+   MIDDLEWARES BASE
+========================= */
 app.use(express.json());
 
-// ---------- MongoDB (serverless-safe cache) ----------
+/* =========================
+   MONGODB (Vercel Safe)
+========================= */
 let cached = global.mongoose;
-if (!cached) cached = global.mongoose = { conn: null, promise: null };
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 async function connectDB() {
   if (cached.conn) return cached.conn;
@@ -44,7 +52,7 @@ async function connectDB() {
   return cached.conn;
 }
 
-// conectar DB en cada request (Vercel friendly)
+// conectar DB en cada request (serverless)
 app.use(async (req, res, next) => {
   try {
     await connectDB();
@@ -55,16 +63,27 @@ app.use(async (req, res, next) => {
   }
 });
 
+/* =========================
+   RUTAS BASE
+========================= */
+
+// root (evita NOT_FOUND)
+app.get("/", (req, res) => {
+  res.send("API running");
+});
+
 // healthcheck
-app.get("/api/health", (_, res) => {
+app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// rutas
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientRoutes);
 
-// ---------- DEMO USER ----------
+/* =========================
+   DEMO USER
+========================= */
 async function ensureDemoUser() {
   if (!process.env.DEMO_EMAIL || !process.env.DEMO_PASSWORD) return;
 
