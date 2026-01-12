@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5175",               // Frontend local (Vite)
-      "https://crud3-lovat.vercel.app",      // Frontend en Vercel (REAL)
+      "https://crud3-x65b.vercel.app/",      // Frontend en Vercel (REAL)
     ],
     credentials: true,
   })
