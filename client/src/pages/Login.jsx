@@ -7,7 +7,7 @@ import { useUI } from "../context/UIContext";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, loginDemo } = useContext(AuthContext); // ✅ usar loginDemo
+  const { login, loginDemo } = useContext(AuthContext);
   const navigate = useNavigate();
   const { showToast } = useUI();
 
@@ -34,36 +34,47 @@ export default function Login() {
 
   return (
     <PublicLayout>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
-        <h2 className="text-xl font-bold mb-4">Login</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2 mb-2 w-full rounded"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2 mb-2 w-full rounded"
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white p-2 w-full rounded mb-2"
-        >
-          Login
-        </button>
-        <button
-          type="button"
-          onClick={handleDemo}
-          className="bg-gray-500 text-white p-2 w-full rounded"
-        >
-          Demo Login
-        </button>
-      </form>
+      <div className="w-full max-w-sm">
+        <div className="bg-white p-6 rounded-xl shadow">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl font-bold">CRUD de Clientes</h1>
+            <p className="text-sm text-gray-600">Inicia sesión para continuar</p>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div>
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="border p-2 w-full rounded"
+              />
+            </div>
+            <div>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="border p-2 w-full rounded"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white p-2 w-full rounded"
+            >
+              Entrar
+            </button>
+            <button
+              type="button"
+              onClick={handleDemo}
+              className="bg-gray-700 hover:bg-gray-800 text-white p-2 w-full rounded"
+            >
+              Entrar con Demo
+            </button>
+          </form>
+        </div>
+      </div>
     </PublicLayout>
   );
 }
