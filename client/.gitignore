@@ -3,7 +3,8 @@ node_modules/
 npm-debug.log
 
 # Env files
-server/.env
+.env
+.env.*
 
 # Build
 client/dist
