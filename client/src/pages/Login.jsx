@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import PublicLayout from "../components/layout/PublicLayout";
 import { useUI } from "../context/UIContext";
@@ -73,6 +73,15 @@ export default function Login() {
               Entrar con Demo
             </button>
           </form>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-600">¿No tienes cuenta?</p>
+            <Link
+              to="/register"
+              className="inline-block mt-2 text-blue-600 hover:underline"
+            >
+              Crear cuenta
+            </Link>
+          </div>
         </div>
       </div>
     </PublicLayout>
