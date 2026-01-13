@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import PublicLayout from "../components/layout/PublicLayout";
 import api from "../api/axios";
 import { useUI } from "../context/UIContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { showToast } = useUI();
+  const navigate = useNavigate();
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
@@ -37,6 +39,7 @@ export default function Register() {
       setLoading(true);
       await api.post("/api/auth/register", { email, password });
       showToast("Registro exitoso", "success");
+      navigate("/");
     } catch {
       showToast("Registro fallido", "error");
     }
