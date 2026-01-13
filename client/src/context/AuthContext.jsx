@@ -31,8 +31,8 @@ export function AuthProvider({ children }) {
 
   // 🔹 Login demo
   async function loginDemo() {
-    const demoEmail = import.meta.env.VITE_DEMO_EMAIL || "demo@demo.com";
-    const demoPass = import.meta.env.VITE_DEMO_PASSWORD || "demo1234";
+    const demoEmail = import.meta.env.VITE_DEMO_EMAIL || "demo@example.com";
+    const demoPass = import.meta.env.VITE_DEMO_PASSWORD || "123456";
     return login(demoEmail, demoPass);
   }
 
