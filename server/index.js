@@ -14,15 +14,25 @@ dotenv.config();
 const app = express();
 
 /* =========================
-   CORS (SIEMPRE PRIMERO)
+   CORS — Permitir Frontend
 ========================= */
+const allowedOrigins = [
+  "http://localhost:5175",            // Frontend local
+  "https://crud3-x65b.vercel.app",   // Frontend deploy
+  "https://crud3-puce.vercel.app",   // Otro dominio deploy
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5175",               // Frontend local
-      "https://crud3-x65b.vercel.app",      // Frontend deploy
-    ],
-    credentials: true,
+    origin: function (origin, callback) {
+      // permitir requests sin origin (ej. Postman) o los permitidos
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS policy: origin not allowed"));
+      }
+    },
+    credentials: true, // si usás cookies o sesión
   })
 );
 
@@ -32,7 +42,7 @@ app.use(
 app.use(express.json());
 
 /* =========================
-   MongoDB (Vercel safe cache)
+   MongoDB — Conexión Vercel-safe
 ========================= */
 let cached = global.mongoose;
 if (!cached) cached = global.mongoose = { conn: null, promise: null };
@@ -60,7 +70,7 @@ app.use(async (req, res, next) => {
 });
 
 /* =========================
-   Root y healthcheck
+   Root y Healthcheck
 ========================= */
 app.get("/", (_, res) => res.send("API running"));
 app.get("/api/health", (_, res) => res.json({ status: "ok" }));
@@ -72,7 +82,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientRoutes);
 
 /* =========================
-   DEMO USER
+   Demo User
 ========================= */
 async function ensureDemoUser() {
   if (!process.env.DEMO_EMAIL || !process.env.DEMO_PASSWORD) return;
