@@ -1,63 +1,56 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import PublicLayout from "../components/layout/PublicLayout";
 
-
 export default function Login() {
-  const { login } = useAuth();
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useContext(AuthContext);
 
-  async function handleLogin(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    await login(form.email, form.password);
-    setLoading(false);
-  }
+    try {
+      await login(email, password);
+      alert("Logged in!");
+    } catch {
+      alert("Login failed");
+    }
+  };
 
-  async function handleDemo() {
-    setLoading(true);
-    await login("demo@demo.com", "demo1234");
-    setLoading(false);
-  }
+  const handleDemo = async () => {
+    try {
+      const demoEmail = import.meta.env.VITE_DEMO_EMAIL || "demo@demo.com";
+      const demoPass = import.meta.env.VITE_DEMO_PASSWORD || "demo1234";
+      await login(demoEmail, demoPass);
+      alert("Demo login success");
+    } catch {
+      alert("Demo login failed");
+    }
+  };
 
   return (
     <PublicLayout>
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-6 rounded shadow w-96 space-y-4"
-      >
-        <h2 className="text-xl font-semibold">Login</h2>
-
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
+        <h2 className="text-xl font-bold mb-4">Login</h2>
         <input
+          type="email"
           placeholder="Email"
-          className="border p-2 w-full"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="border p-2 mb-2 w-full rounded"
         />
-
         <input
           type="password"
           placeholder="Password"
-          className="border p-2 w-full"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border p-2 mb-2 w-full rounded"
         />
-
-        <button
-          disabled={loading}
-          className="bg-black text-white w-full p-2 rounded"
-        >
-          Entrar
+        <button type="submit" className="bg-blue-500 text-white p-2 w-full rounded mb-2">
+          Login
         </button>
-
-        <button
-          type="button"
-          disabled={loading}
-          onClick={handleDemo}
-          className="border w-full p-2 rounded hover:bg-gray-100"
-        >
-          Entrar como demo
+        <button type="button" onClick={handleDemo} className="bg-gray-500 text-white p-2 w-full rounded">
+          Demo Login
         </button>
       </form>
     </PublicLayout>

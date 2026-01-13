@@ -1,48 +1,42 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import React, { useState } from "react";
 import PublicLayout from "../components/layout/PublicLayout";
-import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 export default function Register() {
-  const { register } = useAuth();
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    await register(form.email, form.password);
-    navigate("/");
-  }
+    try {
+      await api.post("/api/auth/register", { email, password });
+      alert("Registered successfully");
+    } catch (err) {
+      console.error(err);
+      alert("Registration failed");
+    }
+  };
 
   return (
     <PublicLayout>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow w-96 space-y-4"
-      >
-        <h2 className="text-xl font-semibold">Registro</h2>
-
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
+        <h2 className="text-xl font-bold mb-4">Register</h2>
         <input
+          type="email"
           placeholder="Email"
-          className="border p-2 w-full"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="border p-2 mb-2 w-full rounded"
         />
-
         <input
           type="password"
           placeholder="Password"
-          className="border p-2 w-full"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border p-2 mb-2 w-full rounded"
         />
-
-        <button className="bg-black text-white w-full p-2 rounded">
-          Crear cuenta
+        <button type="submit" className="bg-green-500 text-white p-2 w-full rounded">
+          Register
         </button>
       </form>
     </PublicLayout>

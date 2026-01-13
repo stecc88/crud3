@@ -1,27 +1,12 @@
-import { useAuth } from "../../context/AuthContext";
+import React from "react";
 
 export default function PrivateLayout({ children }) {
-  const { logout } = useAuth();
-
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="font-semibold text-lg">Client Manager</h1>
-          <button
-            onClick={logout}
-            className="text-sm border px-3 py-1 rounded hover:bg-gray-100"
-          >
-            Logout
-          </button>
-        </div>
+    <div className="min-h-screen p-4 bg-gray-50">
+      <header className="bg-white shadow p-4 mb-6">
+        <h1 className="text-xl font-bold">Dashboard</h1>
       </header>
-
-      {/* Content */}
-      <main className="max-w-5xl mx-auto px-4 py-6">
-        {children}
-      </main>
+      <main>{children}</main>
     </div>
   );
 }

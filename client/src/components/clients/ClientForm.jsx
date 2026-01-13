@@ -1,50 +1,37 @@
-import { useState } from "react";
-import { useClients } from "../../context/ClientContext";
+import React, { useState, useContext } from "react";
+import api from "../../api/axios";
+import { AuthContext } from "../../context/AuthContext";
 
-export default function ClientForm() {
-  const { createClient } = useClients();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
+export default function ClientForm({ fetchClients }) {
+  const [name, setName] = useState("");
+  const { token } = useContext(AuthContext);
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    await createClient(form);
-    setForm({ name: "", email: "", phone: "" });
-  }
+    try {
+      await api.post(
+        "/api/clients",
+        { name },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setName("");
+      fetchClients();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-4 rounded shadow space-y-3"
-    >
-      <h2 className="font-semibold text-lg">Nuevo cliente</h2>
-
+    <form onSubmit={handleSubmit} className="flex gap-2">
       <input
-        placeholder="Nombre"
-        className="border p-2 w-full"
-        value={form.name}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
+        type="text"
+        placeholder="Client Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="border p-2 rounded"
       />
-
-      <input
-        placeholder="Email"
-        className="border p-2 w-full"
-        value={form.email}
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
-      />
-
-      <input
-        placeholder="Teléfono"
-        className="border p-2 w-full"
-        value={form.phone}
-        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-      />
-
-      <button className="bg-black text-white px-4 py-2 rounded">
-        Crear
+      <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+        Add
       </button>
     </form>
   );

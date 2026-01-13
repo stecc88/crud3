@@ -19,40 +19,36 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:5175",               // Frontend local (Vite)
-      "https://crud3-x65b.vercel.app/",      // Frontend en Vercel (REAL)
+      "http://localhost:5175",               // Frontend local
+      "https://crud3-x65b.vercel.app",      // Frontend deploy
     ],
     credentials: true,
   })
 );
 
 /* =========================
-   MIDDLEWARES BASE
+   Middleware base
 ========================= */
 app.use(express.json());
 
 /* =========================
-   MONGODB (Vercel Safe)
+   MongoDB (Vercel safe cache)
 ========================= */
 let cached = global.mongoose;
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+if (!cached) cached = global.mongoose = { conn: null, promise: null };
 
 async function connectDB() {
   if (cached.conn) return cached.conn;
-
   if (!cached.promise) {
     cached.promise = mongoose.connect(process.env.MONGODB_URI, {
       bufferCommands: false,
     });
   }
-
   cached.conn = await cached.promise;
   return cached.conn;
 }
 
-// conectar DB en cada request (serverless)
+// Conectar DB en cada request
 app.use(async (req, res, next) => {
   try {
     await connectDB();
@@ -64,20 +60,14 @@ app.use(async (req, res, next) => {
 });
 
 /* =========================
-   RUTAS BASE
+   Root y healthcheck
 ========================= */
+app.get("/", (_, res) => res.send("API running"));
+app.get("/api/health", (_, res) => res.json({ status: "ok" }));
 
-// root (evita NOT_FOUND)
-app.get("/", (req, res) => {
-  res.send("API running");
-});
-
-// healthcheck
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
-});
-
-// API routes
+/* =========================
+   Rutas API
+========================= */
 app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientRoutes);
 
