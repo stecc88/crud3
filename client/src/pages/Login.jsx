@@ -5,26 +5,24 @@ import PublicLayout from "../components/layout/PublicLayout";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useContext(AuthContext);
+  const { login, loginDemo } = useContext(AuthContext); // ✅ usar loginDemo
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login(email, password);
       alert("Logged in!");
-    } catch {
-      alert("Login failed");
+    } catch (err) {
+      alert("Login failed: " + err.message);
     }
   };
 
   const handleDemo = async () => {
     try {
-      const demoEmail = import.meta.env.VITE_DEMO_EMAIL || "demo@demo.com";
-      const demoPass = import.meta.env.VITE_DEMO_PASSWORD || "demo1234";
-      await login(demoEmail, demoPass);
+      await loginDemo(); // ✅ ahora usamos la función del contexto
       alert("Demo login success");
-    } catch {
-      alert("Demo login failed");
+    } catch (err) {
+      alert("Demo login failed: " + err.message);
     }
   };
 
@@ -46,10 +44,17 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
           className="border p-2 mb-2 w-full rounded"
         />
-        <button type="submit" className="bg-blue-500 text-white p-2 w-full rounded mb-2">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white p-2 w-full rounded mb-2"
+        >
           Login
         </button>
-        <button type="button" onClick={handleDemo} className="bg-gray-500 text-white p-2 w-full rounded">
+        <button
+          type="button"
+          onClick={handleDemo}
+          className="bg-gray-500 text-white p-2 w-full rounded"
+        >
           Demo Login
         </button>
       </form>
