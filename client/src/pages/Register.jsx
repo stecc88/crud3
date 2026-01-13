@@ -1,19 +1,25 @@
 import React, { useState } from "react";
 import PublicLayout from "../components/layout/PublicLayout";
 import api from "../api/axios";
+import { useUI } from "../context/UIContext";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { showToast } = useUI();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       await api.post("/api/auth/register", { email, password });
-      alert("Registered successfully");
-    } catch (err) {
-      console.error(err);
-      alert("Registration failed");
+      showToast("Registro exitoso", "success");
+    } catch {
+      showToast("Registro fallido", "error");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -35,8 +41,8 @@ export default function Register() {
           onChange={(e) => setPassword(e.target.value)}
           className="border p-2 mb-2 w-full rounded"
         />
-        <button type="submit" className="bg-green-500 text-white p-2 w-full rounded">
-          Register
+        <button disabled={loading} type="submit" className="bg-green-500 text-white p-2 w-full rounded">
+          {loading ? "Registrando..." : "Register"}
         </button>
       </form>
     </PublicLayout>

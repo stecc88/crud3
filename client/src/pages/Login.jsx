@@ -1,28 +1,34 @@
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import PublicLayout from "../components/layout/PublicLayout";
+import { useUI } from "../context/UIContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, loginDemo } = useContext(AuthContext); // ✅ usar loginDemo
+  const navigate = useNavigate();
+  const { showToast } = useUI();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login(email, password);
-      alert("Logged in!");
+      showToast("Bienvenido", "success");
+      navigate("/clients");
     } catch (err) {
-      alert("Login failed: " + err.message);
+      showToast("Login fallido: " + err.message, "error");
     }
   };
 
   const handleDemo = async () => {
     try {
       await loginDemo(); // ✅ ahora usamos la función del contexto
-      alert("Demo login success");
+      showToast("Ingreso demo exitoso", "success");
+      navigate("/clients");
     } catch (err) {
-      alert("Demo login failed: " + err.message);
+      showToast("Ingreso demo fallido: " + err.message, "error");
     }
   };
 
